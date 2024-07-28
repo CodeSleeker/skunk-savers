@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "419986724146",
+    "project_id": "skunk-savers",
+    "storage_bucket": "skunk-savers.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:419986724146:android:a89cdad61d727018fd732b",
+        "android_client_info": {
+          "package_name": "com.ssc.skunk_savers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "419986724146-6kqk5d9otmp12vpnforkip0bhchu9vca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ssc.skunk_savers",
+            "certificate_hash": "8561535506500abdcf2b34268808648b99b8b730"
+          }
+        },
+        {
+          "client_id": "419986724146-urmlojdn5os4ps1bd4e43k5nfcj6uhba.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ssc.skunk_savers",
+            "certificate_hash": "0e67ad4b4cbfb6718e8049fc3758b5980fc5de1c"
+          }
+        },
+        {
+          "client_id": "419986724146-09vg82t1krqebrbptpp2r73nr2a474v5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDpPVBLYlkqFWIagoUD96PZbsS9vXpfcs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "419986724146-09vg82t1krqebrbptpp2r73nr2a474v5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

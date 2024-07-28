@@ -1,0 +1,55 @@
+name: skunk_savers
+description: Skunk savers club
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.1-alpha+2
+
+environment:
+  sdk: '>=2.18.2 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  flutter_easyloading: ^3.0.5
+  provider: ^6.0.4
+  intl: ^0.17.0
+  firebase_auth: ^4.2.9
+  cloud_firestore: ^4.4.3
+  firebase_core: ^2.7.0
+  dio: ^4.0.6
+  fluttertoast: ^8.2.1
+  firebase_admin: ^0.2.0
+  flutter_native_splash: ^2.2.18
+  firebase_messaging: ^14.4.1
+  awesome_notifications: ^0.7.4+1
+  flutter_launcher_icons: ^0.12.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter_icons:
+  image_path: "assets/images/app_icon.png"
+  android: true
+
+flutter_native_splash:
+  image: assets/images/skunkworks-logo.png
+  color: "#ffffff"
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: 'Raleway'
+      fonts:
+        - asset: assets/fonts/Raleway/Raleway-Regular.ttf
+        - asset: assets/fonts/Raleway/Raleway-Bold.ttf
+          weight: 700
