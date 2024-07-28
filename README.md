@@ -1,2 +1,2 @@
 # skunk_savers
- A Cooperative Savings and Loans App
+ A Cooperative Savings and Loans Mobile App
