@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:skunk_savers/controllers/interfaces/user.dart';
 import 'package:skunk_savers/models/response.dart';
 import 'package:skunk_savers/models/saving.dart';
@@ -14,8 +15,7 @@ class UserController implements IUserController {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 
   @override
-  Future<SSCUser> getUserDetails(String uid) async =>
-      await users.doc(uid).get().then((value) {
+  Future<SSCUser> getUserDetails(String uid) async => await users.doc(uid).get().then((value) {
         if (value.data() == null) {
           return SSCUser();
         }
@@ -32,12 +32,13 @@ class UserController implements IUserController {
     ];
     var body = Global.emailBody;
     body['to'] = to;
-    body['htmlContent'] =
-        '<html><head></head><body><p>Greetings,</p>You can now login to your SSC Mobile app.<br/>Your password is <b>$password</b></p></body></html>';
+    body['htmlContent'] = '<html><head></head><body><p>Greetings,</p>You can now login to your SSC Mobile app.<br/>Your password is <b>$password</b></p></body></html>';
+    var headers = Constant.headers;
+    headers['api-key'] = dotenv.env['SEND_BLUE_API']!;
     Response response = await dio.post(
       Constant.sendBlueApi,
       options: Options(
-        headers: Constant.headers,
+        headers: headers,
       ),
       data: body,
     );
@@ -68,8 +69,7 @@ class UserController implements IUserController {
   }
 
   @override
-  Future<SSCResponse> partialUpdateUser(
-      String uid, Map<String, dynamic> data) async {
+  Future<SSCResponse> partialUpdateUser(String uid, Map<String, dynamic> data) async {
     try {
       await users.doc(uid).set(data, SetOptions(merge: true));
       return SSCResponse(success: true);

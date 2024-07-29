@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:skunk_savers/controllers/interfaces/message.dart';
 import 'package:skunk_savers/models/chat.dart';
 import 'package:skunk_savers/models/notification.dart';
@@ -10,17 +11,12 @@ import 'package:skunk_savers/res/constant.dart';
 class MessageController implements IMessageController {
   Dio dio = Dio();
   @override
-  CollectionReference messages =
-      FirebaseFirestore.instance.collection('messages');
+  CollectionReference messages = FirebaseFirestore.instance.collection('messages');
 
   @override
-  Future<SSCResponse> addNotification(
-      String uid, SSCNotification notification) async {
+  Future<SSCResponse> addNotification(String uid, SSCNotification notification) async {
     try {
-      await messages
-          .doc(uid)
-          .collection('notifications')
-          .add(notification.toJson());
+      await messages.doc(uid).collection('notifications').add(notification.toJson());
       return SSCResponse(success: true);
     } on FirebaseException catch (e) {
       return SSCResponse(success: false, errorMessage: e.code);
@@ -38,8 +34,7 @@ class MessageController implements IMessageController {
   }
 
   @override
-  Future<SSCResponse> updateNotification(
-      String uid, String id, Map<String, dynamic> data) async {
+  Future<SSCResponse> updateNotification(String uid, String id, Map<String, dynamic> data) async {
     try {
       await messages.doc(uid).collection('notifications').doc(id).update(data);
       return SSCResponse(success: true);
@@ -51,21 +46,9 @@ class MessageController implements IMessageController {
   @override
   Future<SSCResponse> sendMessage(ChatData chat) async {
     try {
-      await messages
-          .doc(chat.from)
-          .collection('chats')
-          .doc(chat.to)
-          .collection('messages')
-          .add(chat.toJson());
-      await messages
-          .doc(chat.to)
-          .collection('chats')
-          .doc(chat.from)
-          .collection('messages')
-          .add(chat.toJson());
-      await messages.doc(chat.to).collection('chats').doc(chat.from).set(
-          {'has_new_message': true, 'modified_at': Timestamp.now()},
-          SetOptions(merge: true));
+      await messages.doc(chat.from).collection('chats').doc(chat.to).collection('messages').add(chat.toJson());
+      await messages.doc(chat.to).collection('chats').doc(chat.from).collection('messages').add(chat.toJson());
+      await messages.doc(chat.to).collection('chats').doc(chat.from).set({'has_new_message': true, 'modified_at': Timestamp.now()}, SetOptions(merge: true));
       await messages.doc(chat.from).collection('chats').doc(chat.to).set({
         'modified_at': Timestamp.now(),
         'has_new_message': false,
@@ -79,11 +62,7 @@ class MessageController implements IMessageController {
   @override
   Future<SSCResponse> seenMessage(String uid, String peerId) async {
     try {
-      await messages
-          .doc(uid)
-          .collection('chats')
-          .doc(peerId)
-          .set({'has_new_message': false}, SetOptions(merge: true));
+      await messages.doc(uid).collection('chats').doc(peerId).set({'has_new_message': false}, SetOptions(merge: true));
       return SSCResponse(success: true);
     } on FirebaseException catch (e) {
       return SSCResponse(success: false, errorMessage: e.code);
@@ -94,12 +73,7 @@ class MessageController implements IMessageController {
   Future<SSCResponse> removeChats(String uid, String peerId) async {
     try {
       await messages.doc(uid).collection('chats').doc(peerId).delete();
-      var snapshots = await messages
-          .doc(uid)
-          .collection('chats')
-          .doc(peerId)
-          .collection('messages')
-          .get();
+      var snapshots = await messages.doc(uid).collection('chats').doc(peerId).collection('messages').get();
       for (var doc in snapshots.docs) {
         await doc.reference.delete();
       }
@@ -110,16 +84,9 @@ class MessageController implements IMessageController {
   }
 
   @override
-  Future<SSCResponse> removeChat(
-      String uid, String peerId, String docId) async {
+  Future<SSCResponse> removeChat(String uid, String peerId, String docId) async {
     try {
-      await messages
-          .doc(uid)
-          .collection('chats')
-          .doc(peerId)
-          .collection('messages')
-          .doc(docId)
-          .delete();
+      await messages.doc(uid).collection('chats').doc(peerId).collection('messages').doc(docId).delete();
       return SSCResponse(success: true);
     } on FirebaseException catch (e) {
       return SSCResponse(success: false, errorMessage: e.code);
@@ -127,16 +94,10 @@ class MessageController implements IMessageController {
   }
 
   @override
-  Future<SSCResponse> batchRemoveChat(
-      String uid, String peerId, List<String> docIds) async {
+  Future<SSCResponse> batchRemoveChat(String uid, String peerId, List<String> docIds) async {
     try {
       final batch = FirebaseFirestore.instance.batch();
-      var snapshots = await messages
-          .doc(uid)
-          .collection('chats')
-          .doc(peerId)
-          .collection('messages')
-          .get();
+      var snapshots = await messages.doc(uid).collection('chats').doc(peerId).collection('messages').get();
       for (var doc in snapshots.docs) {
         if (docIds.contains(doc.id)) {
           batch.delete(doc.reference);
@@ -151,6 +112,8 @@ class MessageController implements IMessageController {
 
   @override
   Future<SSCResponse> sendNotification(PushNotification notification) async {
+    var fcmHeaders = Constant.fcmHeaders;
+    fcmHeaders['Authorization'] = 'key=${dotenv.env['FCM']}';
     try {
       Response response = await dio.post(Constant.fcmApi,
           options: Options(
